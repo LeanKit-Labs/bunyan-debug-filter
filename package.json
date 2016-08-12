@@ -1,10 +1,18 @@
 {
   "name": "bunyan-debug-filter",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Bunyan logging with namespaces and log filtering using the DEBUG environment variable",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "format": "jscs --fix ./",
+    "lint": "eslint --fix ./",
+    "cover": "nyc -r text-summary -r html -- npm run test:only",
+    "cover:show": "open \"file://$PWD/coverage/index.html\"",
+    "pretest": "npm run format && npm run lint",
+    "test": "npm run cover",
+    "test:only": "NODE_ENV=test mocha -R spec 'spec/**/*.spec.js'",
+    "test:watch": "npm run test:only -- -w",
+    "postinstall": "node tasks/symlink-spec-helpers"
   },
   "keywords": [
     "bunyan",
@@ -31,17 +39,6 @@
     "sinon": "^1.17.5",
     "sinon-as-promised": "^4.0.2",
     "sinon-chai": "^2.8.0"
-  },
-  "scripts": {
-    "format": "jscs --fix ./",
-    "lint": "eslint --fix ./",
-    "cover": "nyc -r text-summary -r html -- npm run test:only",
-    "cover:show": "open \"file://$PWD/coverage/index.html\"",
-    "pretest": "npm run format && npm run lint",
-    "test": "npm run cover",
-    "test:only": "NODE_ENV=test mocha -R spec 'spec/**/*.spec.js'",
-    "test:watch": "npm run test:only -- -w",
-    "postinstall": "node tasks/symlink-spec-helpers"
   },
   "nyc": {
     "all": true,
