@@ -14,6 +14,10 @@
     "test:watch": "npm run test:only -- -w",
     "postinstall": "node tasks/symlink-spec-helpers"
   },
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "engineStrict": true,
   "keywords": [
     "bunyan",
     "debug",

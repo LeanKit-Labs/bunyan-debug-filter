@@ -42,10 +42,6 @@ describe( "log", () => {
 			bunyan.createLogger.should.be.calledOnce();
 		} );
 
-		it( "should use the 'debug' log level", () => {
-			bunyan.createLogger.should.be.calledWithMatch( { level: "debug" } );
-		} );
-
 		it( "should set other options correctly", () => {
 			bunyan.createLogger.should.be.calledWithMatch( {
 				name: "appname",
@@ -70,18 +66,35 @@ describe( "log", () => {
 		} );
 	} );
 
+	describe( "with specified serializers", () => {
+		let bunyan, logFactory, serializers;
+		before( () => {
+			serializers = { req() {} };
+			( { bunyan, logFactory } = setup() );
+			logFactory( { name: "appname", serializers } );
+		} );
+
+		it( "should use the specified serializers", () => {
+			bunyan.createLogger.should.be.calledWithMatch( { serializers } );
+		} );
+	} );
+
 	describe( "with a filter pattern", () => {
 		describe( "of *", () => {
 			let bunyan, logFactory;
 			before( () => {
 				( { logFactory, bunyan } = setup() );
-				logFactory( { name: "foo", pattern: "*" } );
-				logFactory( { name: "bar", pattern: "*" } );
+				logFactory( { name: "foo", pattern: "*", other: "data" } );
+				logFactory( { name: "bar", pattern: "*", other: "data" } );
 			} );
 
 			it( "should enable all loggers", () => {
 				bunyan.createLogger.should.be.calledTwice();
-				bunyan.createLogger.should.always.be.calledWithMatch( { level: ALL } );
+				bunyan.createLogger.should.always.be.calledWithMatch( { level: ALL, other: "data" } );
+			} );
+
+			it( "should strip the pattern prop out before calling to bunyan", () => {
+				bunyan.createLogger.getCall( 0 ).args[ 0 ].should.not.have.property( "pattern" );
 			} );
 		} );
 
