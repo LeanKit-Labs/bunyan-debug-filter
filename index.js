@@ -25,13 +25,22 @@ function isEnabled( pattern, namespace ) {
 	return match( enabled, namespace );
 }
 
-module.exports = function( { name, level = "debug", pattern = "" } ) {
+module.exports = function( config ) {
+	const { name, pattern = "" } = config;
+	const options = Object.assign( {}, config );
+	delete options.pattern;
+
+	if ( !options.serializers ) {
+		options.serializers = bunyan.stdSerializers;
+	}
+
 	function createLogger( settings = {} ) {
 		const namespace = settings.namespace;
 		const data = Object.assign( {}, settings );
 		delete data.namespace;
 		const parentData = this && this[ LOG_DATA ];
 		const childData = Object.assign( {}, parentData || {}, data );
+		const localOptions = Object.assign( {}, options );
 		let logger;
 
 		// If they specify a new namespace we create a new logger so we can specify a
@@ -44,13 +53,9 @@ module.exports = function( { name, level = "debug", pattern = "" } ) {
 				childData.namespace = namespace;
 			}
 
-			level = isEnabled( pattern, childData.namespace ) ? ALL : NOTHING;
+			localOptions.level = isEnabled( pattern, childData.namespace ) ? ALL : NOTHING;
 
-			logger = bunyan.createLogger( {
-				name,
-				level,
-				serializers: bunyan.stdSerializers
-			} ).child( childData );
+			logger = bunyan.createLogger( localOptions ).child( childData );
 		} else {
 			logger = this[ CHILD_METHOD ]( data );
 		}
@@ -70,9 +75,5 @@ module.exports = function( { name, level = "debug", pattern = "" } ) {
 	}
 
 	// Otherwise we just need a vanilla logger
-	return bunyan.createLogger( {
-		name,
-		level,
-		serializers: bunyan.stdSerializers
-	} );
+	return bunyan.createLogger( options );
 };
