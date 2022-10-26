@@ -1,10 +1,10 @@
-const { sinon, proxyquire } = require( "spec-helpers" );
+const { sinon, proxyquire } = require( "../spec-helpers" );
 
 const STD_SERIALIZERS = {};
 const ALL = 0;
 const NOTHING = 100;
 
-function setup() {
+function initialize() {
 	const loggers = [];
 
 	function createLogger() {
@@ -34,7 +34,7 @@ describe( "log", () => {
 	describe( "with default options", () => {
 		let bunyan, logFactory;
 		before( () => {
-			( { logFactory, bunyan } = setup() );
+			( { logFactory, bunyan } = initialize() );
 			logFactory( { name: "appname" } );
 		} );
 
@@ -53,7 +53,7 @@ describe( "log", () => {
 	describe( "with a specified level", () => {
 		let bunyan, logFactory;
 		before( () => {
-			( { logFactory, bunyan } = setup() );
+			( { logFactory, bunyan } = initialize() );
 			logFactory( { name: "appname", level: "info" } );
 		} );
 
@@ -70,7 +70,7 @@ describe( "log", () => {
 		let bunyan, logFactory, serializers;
 		before( () => {
 			serializers = { req() {} };
-			( { bunyan, logFactory } = setup() );
+			( { bunyan, logFactory } = initialize() );
 			logFactory( { name: "appname", serializers } );
 		} );
 
@@ -83,7 +83,7 @@ describe( "log", () => {
 		describe( "of *", () => {
 			let bunyan, logFactory;
 			before( () => {
-				( { logFactory, bunyan } = setup() );
+				( { logFactory, bunyan } = initialize() );
 				logFactory( { name: "foo", pattern: "*", other: "data" } );
 				logFactory( { name: "bar", pattern: "*", other: "data" } );
 			} );
@@ -101,7 +101,7 @@ describe( "log", () => {
 		describe( "of foo", () => {
 			let bunyan, logFactory;
 			before( () => {
-				( { logFactory, bunyan } = setup() );
+				( { logFactory, bunyan } = initialize() );
 				logFactory( { name: "foo", pattern: "foo" } );
 				logFactory( { name: "bar", pattern: "foo" } );
 			} );
@@ -122,7 +122,7 @@ describe( "log", () => {
 		describe( "of foo*", () => {
 			let bunyan, logFactory;
 			before( () => {
-				( { logFactory, bunyan } = setup() );
+				( { logFactory, bunyan } = initialize() );
 				logFactory( { name: "foo", pattern: "foo*" } );
 				logFactory( { name: "foo:thing", pattern: "foo*" } );
 				logFactory( { name: "bar", pattern: "foo*" } );
@@ -145,7 +145,7 @@ describe( "log", () => {
 		describe( "of -foo", () => {
 			let bunyan, logFactory;
 			before( () => {
-				( { logFactory, bunyan } = setup() );
+				( { logFactory, bunyan } = initialize() );
 				logFactory( { name: "foo", pattern: "-foo" } );
 				logFactory( { name: "bar", pattern: "-foo" } );
 			} );
@@ -162,7 +162,7 @@ describe( "log", () => {
 		describe( "of foo*,-foo:thing", () => {
 			let bunyan, logFactory;
 			before( () => {
-				( { logFactory, bunyan } = setup() );
+				( { logFactory, bunyan } = initialize() );
 				logFactory( { name: "foo", pattern: "foo*,-foo:thing" } );
 				logFactory( { name: "foo:thing", pattern: "foo*,-foo:thing" } );
 				logFactory( { name: "foo:anotherThing", pattern: "foo*,-foo:thing" } );
@@ -190,9 +190,9 @@ describe( "log", () => {
 		describe( "creating a child logger", () => {
 			let bunyan, parent, loggers, logFactory;
 			before( () => {
-				( { logFactory, bunyan, loggers } = setup() );
+				( { logFactory, bunyan, loggers } = initialize() );
 				parent = logFactory( { name: "app", pattern: "app*,-app:foo:thing" } );
-				bunyan.createLogger.reset();
+				bunyan.createLogger.resetHistory();
 			} );
 
 			describe( "with no arguments", () => {
@@ -201,8 +201,8 @@ describe( "log", () => {
 				} );
 
 				after( () => {
-					bunyan.createLogger.reset();
-					parent.originalChild.reset();
+					bunyan.createLogger.resetHistory();
+					parent.originalChild.resetHistory();
 				} );
 
 				it( "should not create a new parent logger", () => {
@@ -224,8 +224,8 @@ describe( "log", () => {
 				} );
 
 				after( () => {
-					bunyan.createLogger.reset();
-					parent.originalChild.reset();
+					bunyan.createLogger.resetHistory();
+					parent.originalChild.resetHistory();
 				} );
 
 				it( "should not create a new parent logger", () => {
@@ -250,8 +250,8 @@ describe( "log", () => {
 				} );
 
 				after( () => {
-					bunyan.createLogger.reset();
-					parent.originalChild.reset();
+					bunyan.createLogger.resetHistory();
+					parent.originalChild.resetHistory();
 				} );
 
 				it( "should create a new parent logger", () => {
@@ -280,7 +280,7 @@ describe( "log", () => {
 
 				before( () => {
 					child = parent.child( { namespace: "foo", id: 1337 } );
-					bunyan.createLogger.reset();
+					bunyan.createLogger.resetHistory();
 				} );
 
 				describe( "without a namespace", () => {
@@ -289,8 +289,8 @@ describe( "log", () => {
 					} );
 
 					after( () => {
-						bunyan.createLogger.reset();
-						child.originalChild.reset();
+						bunyan.createLogger.resetHistory();
+						child.originalChild.resetHistory();
 					} );
 
 					it( "should not create a new parent logger", () => {
@@ -316,8 +316,8 @@ describe( "log", () => {
 					} );
 
 					after( () => {
-						bunyan.createLogger.reset();
-						child.originalChild.reset();
+						bunyan.createLogger.resetHistory();
+						child.originalChild.resetHistory();
 					} );
 
 					it( "should create new parent loggers", () => {

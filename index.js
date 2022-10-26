@@ -48,7 +48,7 @@ module.exports = function( config ) {
 		// child logger.
 		if ( namespace ) {
 			if ( parentData ) {
-				childData.namespace = `${parentData.namespace}:${namespace}`;
+				childData.namespace = `${ parentData.namespace }:${ namespace }`;
 			} else {
 				childData.namespace = namespace;
 			}

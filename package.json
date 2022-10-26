@@ -4,20 +4,13 @@
   "description": "Bunyan logging with namespaces and log filtering using the DEBUG environment variable",
   "main": "index.js",
   "scripts": {
-    "format": "jscs --fix ./",
     "lint": "eslint --fix ./",
     "cover": "nyc -r text-summary -r html -- npm run test:only",
     "cover:show": "open \"file://$PWD/coverage/index.html\"",
-    "pretest": "npm run format && npm run lint",
     "test": "npm run cover",
     "test:only": "NODE_ENV=test mocha -R spec 'spec/**/*.spec.js'",
-    "test:watch": "npm run test:only -- -w",
-    "postinstall": "node tasks/symlink-spec-helpers"
+    "test:watch": "npm run test:only -- -w"
   },
-  "engines": {
-    "node": ">=6.0.0"
-  },
-  "engineStrict": true,
   "keywords": [
     "bunyan",
     "debug",
@@ -28,29 +21,36 @@
   "author": "Matt Dunlap <mpdunlap@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "bunyan": "^1.8.1"
+    "bunyan": "^1.8.15"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
-    "chai-as-promised": "^5.3.0",
-    "dirty-chai": "^1.2.2",
-    "eslint": "^3.2.2",
-    "eslint-config-leankit": "^2.0.0",
-    "jscs": "^3.0.7",
-    "mocha": "^3.0.2",
-    "nyc": "^7.1.0",
-    "proxyquire": "^1.7.10",
-    "sinon": "^1.17.5",
-    "sinon-as-promised": "^4.0.2",
-    "sinon-chai": "^2.8.0"
+    "chai": "^4.3.6",
+    "chai-as-promised": "^7.1.1",
+    "dirty-chai": "^2.0.1",
+    "eslint": "^8.26.0",
+    "eslint-config-leankit": "^6.0.0",
+    "mocha": "^10.1.0",
+    "nyc": "^15.1.0",
+    "proxyquire": "^2.1.3",
+    "sinon": "^14.0.1",
+    "sinon-chai": "^3.7.0"
   },
   "nyc": {
     "all": true,
+    "instrument": true,
+    "sourceMap": false,
+    "reporter": [
+      "html",
+      "text-summary"
+    ],
     "exclude": [
+      "configs",
       "coverage",
       "tasks",
       "spec",
-      "spec-helpers"
+      "spec-helpers",
+      "**/*.spec.js",
+      "**/.eslintrc.js"
     ]
   }
 }

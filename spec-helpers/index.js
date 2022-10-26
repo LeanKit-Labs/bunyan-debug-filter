@@ -1,7 +1,6 @@
 const chai = require( "./chai" );
 const should = chai.should();
 const sinon = require( "sinon" );
-require( "sinon-as-promised" ); // Side effect: modifies sinon on import
 const path = require( "path" );
 
 const ROOT_PATH = path.join( __dirname, "../" );
