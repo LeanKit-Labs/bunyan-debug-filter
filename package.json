@@ -1,6 +1,6 @@
 {
   "name": "bunyan-debug-filter",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "Bunyan logging with namespaces and log filtering using the DEBUG environment variable",
   "main": "index.js",
   "scripts": {
